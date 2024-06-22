@@ -1,18 +1,50 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: Deploy React App to Personal Server
+
+on:
+  push:
+    branches:
+      - main  # 메인 브랜치를 지정합니다.
+  pull_request:
+    branches:
+      - '*'  # 모든 PR 브랜치를 빌드합니다.
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
+
 jobs:
-  Explore-GitHub-Actions:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref_name }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'  # Node.js 버전을 20으로 설정합니다.
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the React app
+        run: npm run build
+
+      - name: Deploy to server via SSH
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/pull/') || github.event_name == 'workflow_dispatch'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_IP }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            rm -rf /home/${{secrets.DEPLOY_USER}}/notice-project/notice-web/* # /path/to/your/app/*
+            scp -r ./dist/* ${{secrets.DEPLOY_USER}}@${{secrets.DEPLOY_IP}}:/home/${{secrets.DEPLOY_USER}}/notice-project/notice-web/
+            # 필요한 경우 추가로 서버에서 실행할 명령을 추가합니다.
+            ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'cd /home/${{secrets.DEPLOY_USER}}/notice-project/notice-web && server -s dist'
