@@ -58,5 +58,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            ls ~/notice-project/github-actions-study/dist/
-            npx serve -s ~/notice-project/github-actions-study/dist/
+            cd ~/notice-project/github-actions-study
+            nohup npx serve -s dist &
