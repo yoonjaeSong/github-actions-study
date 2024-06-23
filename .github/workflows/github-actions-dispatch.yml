@@ -40,3 +40,4 @@ jobs:
           script: |
             whoami
             rm -rf /home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/* # /path/to/your/app/*
+            scp -r ./dist/* ${{secrets.DEPLOY_USER}}@${{secrets.DEPLOY_IP}}:/home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/
