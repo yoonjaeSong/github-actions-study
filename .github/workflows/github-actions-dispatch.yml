@@ -44,9 +44,9 @@ jobs:
       - name: Deploy to local server via SCP
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.LOCAL_SERVER_IP }}
-          username: ${{ secrets.LOCAL_SERVER_USER }}
-          password: ${{ secrets.LOCAL_SERVER_PASSWORD }}
+          host: ${{ secrets.DEPLOY_IP }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           source: "./dist/*"
           target: "/home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/"
