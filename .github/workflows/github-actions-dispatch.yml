@@ -35,9 +35,10 @@ jobs:
         with:
           host: ${{ secrets.DEPLOY_IP }}
           username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.DEPLOY_PASSWORD }}
           port: 22
           script: |
+            whoami
             rm -rf /home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/* # /path/to/your/app/*
             scp -r ./dist/* ${{secrets.DEPLOY_USER}}@${{secrets.DEPLOY_IP}}:/home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/
             # 필요한 경우 추가로 서버에서 실행할 명령을 추가합니다.
