@@ -38,7 +38,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            whoami
             rm -rf /home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/*
 
       - name: Deploy to local server via SCP
@@ -59,4 +58,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            serve -s ~/notice-project/github-actions-study/dist/
+            ls ~/notice-project/github-actions-study/dist/
+            npx -y serve -s ~/notice-project/github-actions-study/dist/
