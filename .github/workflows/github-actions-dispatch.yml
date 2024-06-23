@@ -49,5 +49,3 @@ jobs:
           script: |
             cd /home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study
             npm install
-            npm run build
-            nohup serve -s dist &
