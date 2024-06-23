@@ -29,7 +29,7 @@ jobs:
       - name: Build the React app
         run: npm run build
 
-      - name: Deploy to server via SSH
+      - name: Clean remote directory
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/pull/') || github.event_name == 'workflow_dispatch'
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -39,5 +39,14 @@ jobs:
           port: 22
           script: |
             whoami
-            rm -rf /home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/* # /path/to/your/app/*
-            scp -o StrictHostKeyChecking=no -r ./dist/* ${{secrets.DEPLOY_USER}}@${{secrets.DEPLOY_IP}}:/home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/
+            rm -rf /home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/*
+
+      - name: Deploy to local server via SCP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.LOCAL_SERVER_IP }}
+          username: ${{ secrets.LOCAL_SERVER_USER }}
+          password: ${{ secrets.LOCAL_SERVER_PASSWORD }}
+          port: 22
+          source: "./dist/*"
+          target: "/home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/"
