@@ -47,7 +47,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "./dist/*"
+          source: "./*"
           target: "/home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/"
 
       - name: Start server on local server
