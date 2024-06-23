@@ -35,8 +35,6 @@ jobs:
         with:
           host: ${{ secrets.DEPLOY_IP }}
           username: ${{ secrets.DEPLOY_USER }}
-          password: ${{ secrets.DEPLOY_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          script: |
-            whoami
-            rm -rf /home/${{secrets.DEPLOY_USER}}/notice-project/github-actions-study/* # /path/to/your/app/*
+          script: whoami
